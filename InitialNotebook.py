@@ -20,6 +20,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn import metrics
 
+from GenreClassificationUtil import plot_confusion_matrix
+
 cmap = plt.get_cmap('inferno')
 
 plt.figure(figsize=(10,10))
@@ -228,21 +230,7 @@ def train_nn_classification_model(
   plt.legend()
   plt.show()
   
-  # Output a plot of the confusion matrix.
-  cm = metrics.confusion_matrix(validation_targets, final_predictions)
-  # Normalize the confusion matrix by row (i.e by the number of samples
-  # in each class).
-  cm_normalized = cm.astype("float") / cm.sum(axis=1)[:, np.newaxis]
-  ax = sns.heatmap(cm_normalized, cmap="bone_r")
-  ax.set_aspect(1)
-  plt.title("Confusion matrix")
-  plt.xticks(np.arange(10), genres, rotation=45)
-  plt.yticks(np.arange(10), genres)
-  plt.ylabel("True label")
-  plt.xlabel("Predicted label")
-  for tick in ax.yaxis.get_minor_ticks():
-    tick.label1.set_horizontalalignment('center')
-  plt.show()
+  plot_confusion_matrix(validation_targets, final_predictions)
 
   return classifier
 
