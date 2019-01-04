@@ -5,6 +5,7 @@ from sklearn import metrics, svm
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.model_selection import train_test_split
 from matplotlib import cm, gridspec, pyplot as plt
+from GenreClassificationUtil import plot_confusion_matrix
 
 cmap = plt.get_cmap('inferno')
 genres = 'blues classical country disco hiphop jazz metal pop reggae rock'.split()
@@ -40,29 +41,6 @@ def dataPreProcessing():
 	return X_train, y_train, X_test, y_test
 
 
-def plotConfusionMatrix(validation_targets, final_predictions):
-
-	cm = metrics.confusion_matrix(validation_targets, final_predictions)
-	# Normalize the confusion matrix by row (i.e by the number of samples
-	# in each class).
-	cm_normalized = cm.astype("float") / cm.sum(axis=1)[:, np.newaxis]
-	cmap="bone_r"
-	plt.imshow(cm, interpolation='nearest', cmap=cmap)
-	plt.title("Confusion matrix")
-	plt.xticks(np.arange(10), genres, rotation=45)
-	plt.yticks(np.arange(10), genres)
-	plt.ylabel("True label")
-	plt.xlabel("Predicted label")
-
-	fmt = '.2f'
-	thresh = cm_normalized.max() / 2.
-	for i, j in itertools.product(range(cm_normalized.shape[0]), range(cm_normalized.shape[1])):
-	    plt.text(j, i, format(cm_normalized[i, j] * 100, fmt),
-	             horizontalalignment="center",
-	             color="white" if cm_normalized[i, j] > thresh else "black")
-	plt.show()
-
-
 training_examples, training_targets, validation_examples, validation_targets = dataPreProcessing()
 
 classifier = svm.SVC(kernel='linear')
@@ -70,5 +48,5 @@ final_predictions = classifier.fit(training_examples, training_targets).predict(
 accuracy = metrics.accuracy_score(validation_targets, final_predictions)
 print("Final accuracy (on validation data): %0.2f" % accuracy)
 
-plotConfusionMatrix(validation_targets, final_predictions)
+plot_confusion_matrix(validation_targets, final_predictions)
 
