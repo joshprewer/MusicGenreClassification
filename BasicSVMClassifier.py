@@ -12,13 +12,13 @@ genres = 'blues classical country disco hiphop jazz metal pop reggae rock'.split
 
 def dataPreProcessing():
 
-	header = 'filename chroma_stft rmse spectral_centroid spectral_bandwidth rolloff zero_crossing_rate'
+	header = 'filename chroma_stft chroma_stftV rmse rmseV spectral_centroid spectral_centroidV spectral_bandwidth spectral_bandwidthV rolloff rolloffV zero_crossing_rate zero_crossing_rateV'
 	for i in range(1, 21):
-	    header += f' mfcc{i}'
+	    header += f' mfcc{i} mfcc{i}V'
 	header += ' label'
 	header = header.split()
 
-	data = pd.read_csv('data.csv')
+	data = pd.read_csv('newData.csv')
 	data.head()
 
 	# Dropping unneccesary columns
@@ -29,7 +29,7 @@ def dataPreProcessing():
 	y = encoder.fit_transform(genre_list)
 
 	scaler = StandardScaler()
-	X = scaler.fit_transform(np.array(data.iloc[:, 6:-1], dtype = float))
+	X = scaler.fit_transform(np.array(data.iloc[:, :-1], dtype = float))
 
 	X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
@@ -43,7 +43,7 @@ def dataPreProcessing():
 
 training_examples, training_targets, validation_examples, validation_targets = dataPreProcessing()
 
-classifier = svm.SVC(kernel='linear')
+classifier = svm.SVC(C=5, kernel='rbf', gamma='auto')
 final_predictions = classifier.fit(training_examples, training_targets).predict(validation_examples)
 accuracy = metrics.accuracy_score(validation_targets, final_predictions)
 print("Final accuracy (on validation data): %0.2f" % accuracy)
