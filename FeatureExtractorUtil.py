@@ -5,13 +5,13 @@ import pathlib
 import csv
 import os
 
-header = 'filename chroma_stft rmse spectral_centroid spectral_bandwidth rolloff zero_crossing_rate'
+header = 'filename chroma_stft chroma_stftV rmse rmseV spectral_centroid spectral_centroidV spectral_bandwidth spectral_bandwidthV rolloff rolloffV zero_crossing_rate zero_crossing_rateV tempo'
 for i in range(1, 21):
-    header += f' mfcc{i}'
+    header += f' mfcc{i} mfcc{i}V'
 header += ' label'
 header = header.split()
 
-file = open('data.csv', 'w', newline='')
+file = open('dataWithRhythm.csv', 'w', newline='')
 with file:
     writer = csv.writer(file)
     writer.writerow(header)
@@ -28,11 +28,12 @@ for g in genres:
         rolloff = librosa.feature.spectral_rolloff(y=y, sr=sr)
         zcr = librosa.feature.zero_crossing_rate(y)
         mfcc = librosa.feature.mfcc(y=y, sr=sr)
-        to_append = f'{filename} {np.mean(chroma_stft)} {np.mean(rmse)} {np.mean(spec_cent)} {np.mean(spec_bw)} {np.mean(rolloff)} {np.mean(zcr)}'    
+        tempo = librosa.beat.tempo(y=y, sr=sr)
+        to_append = f'{filename} {np.mean(chroma_stft)} {np.std(chroma_stft)} {np.mean(rmse)} {np.std(rmse)} {np.mean(spec_cent)} {np.std(spec_cent)} {np.mean(spec_bw)} {np.std(spec_bw)} {np.mean(rolloff)} {np.std(rolloff)} {np.mean(zcr)} {np.std(zcr)} {tempo[0]}'    
         for e in mfcc:
-            to_append += f' {np.mean(e)}'
+            to_append += f' {np.mean(e)} {np.std(e)}'
         to_append += f' {g}'
-        file = open('data.csv', 'a', newline='')
+        file = open('dataWithRhythm.csv', 'a', newline='')
         with file:
             writer = csv.writer(file)
             writer.writerow(to_append.split())
