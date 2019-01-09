@@ -33,7 +33,7 @@ for i in range(1, 21):
 header += ' label'
 header = header.split()
 
-data = pd.read_csv('data.csv')
+data = pd.read_csv('newData.csv')
 data.head()
 
 # Dropping unneccesary columns
@@ -44,9 +44,9 @@ encoder = LabelEncoder()
 y = encoder.fit_transform(genre_list)
 
 scaler = StandardScaler()
-X = scaler.fit_transform(np.array(data.iloc[:, 6:-1], dtype = float))
+X = scaler.fit_transform(np.array(data.iloc[:, :-1], dtype = float))
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25)
 
 training_examples = pd.DataFrame(data=X_train)
 training_targets = pd.DataFrame(data=y_train)
@@ -98,11 +98,10 @@ def create_predict_input_fn(features, labels, batch_size):
   def _input_fn():
     raw_features = {"mfccs": features.values}
     raw_targets = np.array(labels)
-    
+
     ds = Dataset.from_tensor_slices((raw_features, raw_targets)) # warning: 2GB limit
     ds = ds.batch(batch_size)
-    
-        
+       
     # Return the next batch of data.
     feature_batch, label_batch = ds.make_one_shot_iterator().get_next()
     return feature_batch, label_batch
@@ -164,7 +163,7 @@ def train_nn_classification_model(
 
   
   # Create feature columns.
-  feature_columns = [tf.feature_column.numeric_column('mfccs', shape=20)]
+  feature_columns = [tf.feature_column.numeric_column('mfccs', shape=52)]
 
   # Create a DNNClassifier object.
   my_optimizer = tf.train.AdagradOptimizer(learning_rate=learning_rate)
@@ -236,9 +235,9 @@ def train_nn_classification_model(
 
 classifier = train_nn_classification_model(
     learning_rate=0.005,
-    steps=2500,
+    steps=7700,
     batch_size=10,
-    hidden_units=[100, 100],
+    hidden_units=[100, 60, 30],
     training_examples=training_examples,
     training_targets=training_targets,
     validation_examples=validation_examples,
