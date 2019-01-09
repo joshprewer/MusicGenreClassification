@@ -12,13 +12,13 @@ genres = 'blues classical country disco hiphop jazz metal pop reggae rock'.split
 
 def dataPreProcessing():
 
-	header = 'filename chroma_stft chroma_stftV rmse rmseV spectral_centroid spectral_centroidV spectral_bandwidth spectral_bandwidthV rolloff rolloffV zero_crossing_rate zero_crossing_rateV'
+	header = 'filename chroma_stft chroma_stftV rmse rmseV spectral_centroid spectral_centroidV spectral_bandwidth spectral_bandwidthV rolloff rolloffV zero_crossing_rate zero_crossing_rateV tempo'
 	for i in range(1, 21):
 	    header += f' mfcc{i} mfcc{i}V'
 	header += ' label'
 	header = header.split()
 
-	data = pd.read_csv('newData.csv')
+	data = pd.read_csv('dataWithRhythm.csv')
 	data.head()
 
 	# Dropping unneccesary columns
@@ -43,7 +43,7 @@ def dataPreProcessing():
 
 training_examples, training_targets, validation_examples, validation_targets = dataPreProcessing()
 
-classifier = svm.SVC(C=5, kernel='rbf', gamma='auto')
+classifier = svm.SVC(C=20, kernel='rbf', gamma='auto')
 final_predictions = classifier.fit(training_examples, training_targets).predict(validation_examples)
 accuracy = metrics.accuracy_score(validation_targets, final_predictions)
 print("Final accuracy (on validation data): %0.2f" % accuracy)
