@@ -3,9 +3,7 @@ import itertools
 from sklearn import metrics
 from matplotlib import cm, gridspec, pyplot as plt
 
-genres = 'blues classical country disco hiphop jazz metal pop reggae rock'.split()
-
-def plot_confusion_matrix(validation_targets, final_predictions):
+def plot_confusion_matrix(validation_targets, final_predictions, genres):
 
 	cm = metrics.confusion_matrix(validation_targets, final_predictions)
 	# Normalize the confusion matrix by row (i.e by the number of samples
@@ -14,8 +12,8 @@ def plot_confusion_matrix(validation_targets, final_predictions):
 	cmap="bone_r"
 	plt.imshow(cm, interpolation='nearest', cmap=cmap)
 	plt.title("Confusion matrix")
-	plt.xticks(np.arange(10), genres, rotation=45)
-	plt.yticks(np.arange(10), genres)
+	plt.xticks(np.arange(len(genres)), genres, rotation=45)
+	plt.yticks(np.arange(len(genres)), genres)
 	plt.ylabel("True label")
 	plt.xlabel("Predicted label")
 

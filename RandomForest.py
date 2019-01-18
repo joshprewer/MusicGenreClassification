@@ -1,10 +1,13 @@
 import pandas as pd
 import numpy as np
 import itertools
+import sys
 from sklearn import metrics, ensemble
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.model_selection import train_test_split
 from matplotlib import cm, gridspec, pyplot as plt
+
+sys.path.insert(0, '/Utilities/GenreClassificationUtil.py')
 from GenreClassificationUtil import plot_confusion_matrix
 
 cmap = plt.get_cmap('inferno')

@@ -3,7 +3,7 @@ import numpy as np
 def fast_fractional_fourier_transform(vec, exponent):
     # Compute Fourier transform powers of vec.
     f0 = np.array(vec)
-    f1 = np.fft.fft(f0)
+    f1 = np.fft.fft(f0, axis=0)
     f2 = negate_permutation(f0)
     f3 = negate_permutation(f1)
 

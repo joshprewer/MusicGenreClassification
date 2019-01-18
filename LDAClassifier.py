@@ -1,9 +1,12 @@
 import pandas as pd
 import numpy as np
 import itertools
+import sys
 from sklearn import metrics, model_selection, utils, discriminant_analysis
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from matplotlib import cm, gridspec, pyplot as plt
+
+sys.path.insert(0, '/Utilities/GenreClassificationUtil.py')
 from GenreClassificationUtil import plot_confusion_matrix
 
 cmap = plt.get_cmap('inferno')

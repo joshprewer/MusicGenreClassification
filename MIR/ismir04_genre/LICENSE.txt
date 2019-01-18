@@ -1,0 +1,16 @@
+Music Licensing at Magnatune [1]
+
+Non-Commercial Use
+
+No paid license is required for non-commercial use.
+
+You must meet the legal requirement [2] for "non-commercial use" as defined by the Creative Commons License which governs all Magnatune MP3 files.
+
+Please note that if you are a "non-profit institution" this does not necessarily imply that your use is "non-commercial". Please consult the license for details.
+
+You must abide by the Attribution-NonCommercial-ShareAlike use restrictions placed by the license.
+
+
+
+[1] http://magnatune.com/info/licensing
+[2] http://creativecommons.org/licenses/by-nc-sa/1.0/legalcode
