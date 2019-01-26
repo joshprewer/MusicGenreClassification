@@ -5,13 +5,11 @@ import sys
 from sklearn import metrics, svm, model_selection, utils
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from matplotlib import cm, gridspec, pyplot as plt
+from utilities import plot_confusion_matrix
 
-sys.path.insert(0, 'h:\\Uni\\MusicGenreClassification\\Utilities\\')
-from GenreClassificationUtil import plot_confusion_matrix
+genres = 'blues classical country disco hiphop jazz metal pop reggae rock'.split()
 
-genres = 'classical electronic jazz metal pop punk rock world'.split()
-
-data = pd.read_csv('ISMIRData.csv')
+data = pd.read_csv('MIR/GTZAN/newData.csv')
 data.head()
 
 # Dropping unneccesary columns
@@ -30,4 +28,4 @@ msg = "Accuracy: %f (%f)" % (cv_results.mean(), cv_results.std())
 print(msg)
 
 final_predictions = model_selection.cross_val_predict(classifier, pd.DataFrame(data=X), y, cv=6)
-plot_confusion_matrix(y, final_predictions)
+plot_confusion_matrix(y, final_predictions, genres)
