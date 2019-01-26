@@ -6,11 +6,8 @@ from sklearn import metrics, mixture
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.model_selection import train_test_split
 from matplotlib import cm, gridspec, pyplot as plt
+from utilities import plot_confusion_matrix
 
-sys.path.insert(0, '/Utilities/GenreClassificationUtil.py')
-from GenreClassificationUtil import plot_confusion_matrix
-
-cmap = plt.get_cmap('inferno')
 genres = 'blues classical country disco hiphop jazz metal pop reggae rock'.split()
 
 def dataPreProcessing():
@@ -52,5 +49,5 @@ final_predictions = classifier.fit(training_examples, training_targets).predict(
 accuracy = metrics.accuracy_score(validation_targets, final_predictions)
 print("Final accuracy (on validation data): %0.2f" % accuracy)
 
-plot_confusion_matrix(validation_targets, final_predictions)
+plot_confusion_matrix(validation_targets, final_predictions, genres)
 

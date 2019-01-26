@@ -5,11 +5,8 @@ import sys
 from sklearn import metrics, model_selection, utils, discriminant_analysis
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from matplotlib import cm, gridspec, pyplot as plt
+from utilities import plot_confusion_matrix
 
-sys.path.insert(0, '/Utilities/GenreClassificationUtil.py')
-from GenreClassificationUtil import plot_confusion_matrix
-
-cmap = plt.get_cmap('inferno')
 genres = 'blues classical country disco hiphop jazz metal pop reggae rock'.split()
 
 data = pd.read_csv('dataWithRhythm.csv')

@@ -5,22 +5,9 @@ import sys
 from sklearn import metrics, svm, model_selection, utils
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from matplotlib import cm, gridspec, pyplot as plt
-from utilities import plot_confusion_matrix
+from utilities import plot_confusion_matrix, import_data_from
 
-genres = 'blues classical country disco hiphop jazz metal pop reggae rock'.split()
-
-data = pd.read_csv('MIR/GTZAN/newData.csv')
-data.head()
-
-# Dropping unneccesary columns
-data = data.drop(['filename'],axis=1)
-
-genre_list = data.iloc[:, -1]
-encoder = LabelEncoder()
-y = encoder.fit_transform(genre_list)
-
-scaler = StandardScaler()
-X = scaler.fit_transform(np.array(data.iloc[:, :-1], dtype = float))
+X, y, genres = import_data_from('MIR/GTZAN/newData.csv')
 
 classifier = svm.SVC(kernel='rbf', C=5, gamma='auto')
 cv_results = model_selection.cross_val_score(classifier, pd.DataFrame(data=X), y, cv=6)

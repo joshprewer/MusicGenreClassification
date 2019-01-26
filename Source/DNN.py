@@ -20,7 +20,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn import metrics
 
-from GenreClassificationUtil import plot_confusion_matrix
+from utilities import plot_confusion_matrix
 
 cmap = plt.get_cmap('inferno')
 
