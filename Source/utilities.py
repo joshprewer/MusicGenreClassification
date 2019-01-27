@@ -3,7 +3,7 @@ import pandas as pd
 import itertools
 import math as math
 from librosa import util, filters
-from sklearn import metrics
+from sklearn import metrics, utils
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from matplotlib import cm, gridspec, pyplot as plt
 
@@ -22,6 +22,8 @@ def import_data_from(path):
 
     scaler = StandardScaler()
     x = scaler.fit_transform(np.array(data.iloc[:, :-1], dtype = float))
+
+    # x, y = utils.shuffle(x, y, random_state=0)
 
     return x, y, genres
 
