@@ -98,7 +98,7 @@ class ReliefFSFS(object):
         self.n_features_to_keep = n_features_to_keep
 
 
-    def transform(self, X, y):
+    def transform(self, X, y, fuunction):
         """Reduces the feature set down to the top `n_features_to_keep` features.
         Parameters
         ----------
@@ -120,8 +120,8 @@ class ReliefFSFS(object):
         for feature in range(weighted_features.shape[1]):
             feature_to_test = weighted_features[:, feature]
             optimal_features = np.vstack((optimal_features, feature_to_test))
-            classifier = svm.SVC(kernel='rbf', gamma='auto')
-            cv_results = model_selection.cross_val_score(classifier, pd.DataFrame(data=np.transpose(optimal_features)), y, cv=6)
+            classifier = function
+            cv_results = model_selection.cross_val_score(classifier, pd.DataFrame(data=np.transpose(optimal_features)), y, cv=10)
 
             if (cv_results.mean() > previous_results):
                 previous_results = cv_results.mean()
