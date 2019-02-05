@@ -18,13 +18,13 @@ class feature_vector:
         self.data = None
 
 
-features = [feature_vector('chroma_stft', librosa.feature.chroma_stft), feature_vector('rmse', librosa.feature.rmse),
+features = [feature_vector('rmse', librosa.feature.rmse),
             feature_vector('spectral_centroid', librosa.feature.spectral_centroid), feature_vector('spectral_bandwidth', librosa.feature.spectral_bandwidth), 
             feature_vector('spectral_contrast', librosa.feature.spectral_contrast), feature_vector('spectral_flatness', librosa.feature.spectral_flatness),
             feature_vector('spectral_rolloff', librosa.feature.spectral_rolloff), feature_vector('zcr', librosa.feature.zero_crossing_rate)]
 
 mfcc_features = []
-for i in range(1, 20):
+for i in range(0, 10):
     mfcc_features = np.append(mfcc_features, feature_vector(f'mfcc{i}', librosa.feature.mfcc))
 
 
@@ -47,12 +47,13 @@ genres = 'blues classical country disco hiphop jazz metal pop reggae rock'.split
 for g in genres:
     for filename in os.listdir(f'./MIR/GTZAN/audio/{g}'):
         songname = f'./MIR/GTZAN/audio/{g}/{filename}'
+        print(songname)
         y, sr = librosa.load(songname, mono=True, duration=30)
         to_append = f'{filename}'
         for feature in features:
             feature.data = feature.function(y=y)
             to_append += f' {np.mean(feature.data)} {np.std(feature.data)} {np.mean(np.diff(feature.data))} {np.mean(np.diff(feature.data))}'    
-        mfccs = librosa.feature.mfcc(y=y, n_mfcc=20)
+        mfccs = librosa.feature.mfcc(y=y, n_mfcc=10)
         for e in mfccs:
             to_append += f' {np.mean(e)} {np.std(e)} {np.mean(np.diff(e))} {np.std(np.diff(e))}'
         to_append += f' {g}'
