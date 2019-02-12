@@ -1,7 +1,9 @@
-img_data/
+img_data
 .vscode/
 Tools/
 Datasets/ismir04_genre/audio/
 Datasets/GTZAN/audio/
 Datasets/fma_small/audio/
+Source/Feature Extractors/rp_extract
+Source/Feature Selectors/LSTM-Music-Genre-Classification-master
 __pycache__
