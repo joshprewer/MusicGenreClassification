@@ -6,6 +6,8 @@ import numpy as np
 import pathlib
 import csv
 import os
+import librosa
+from rp_extract import rp_extract
 
 fileName = 'SSDFeaturesGTZAN.csv'
 
@@ -48,24 +50,15 @@ spectrum = Spectrum()
 w = Windowing(type = 'hann')
 
 for g in genres:
-    for filename in os.listdir(f'./MIR/GTZAN/audio/{g}'):
-        songname = f'./MIR/GTZAN/audio/{g}/{filename}'
-        loader = essentia.standard.MonoLoader(filename=songname)
-        y = loader()
-
-        ssd = []
-        bark_bands = None
-        barkbands = BarkBands()
-
-        for frame in FrameGenerator(y, frameSize=1024, hopSize=512, startFromZero=True):
-            ssd.append(barkbands(spectrum(w(frame))))
-
-        ssd = essentia.array(ssd).T
+    for filename in os.listdir(f'./Datasets/GTZAN/audio/{g}'):
+        songname = f'./Datasets/GTZAN/audio/{g}/{filename}'
+        y, sr = librosa.load(songname, mono=True, duration=30)
         to_append = f'{filename}'
+        
+        ssd = rp_extract.rp_extract(wavedata=y, samplerate=sr, extract_ssd=True).get('ssd')
 
-        for i in range(0, 24):
-            ssd_features[i].data = ssd[i]
-            to_append += ssd_features[i].get_features()
+        for item in ssd:
+            to_append += f' {item}'
         
         to_append += f' {g}'
         file = open(fileName, 'a', newline='')
