@@ -114,7 +114,7 @@ class ReliefFSFS(object):
         weighted_features = reliefF.transform(X)
 
         optimal_features = np.atleast_2d()
-        optimal_features = np.resize(optimal_features, 1000)
+        optimal_features = np.resize(optimal_features, len(y))
         previous_results = 0
         
         for feature in range(weighted_features.shape[1]):
