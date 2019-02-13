@@ -3,7 +3,7 @@ import pandas as pd
 import itertools
 import math as math
 from librosa import util, filters
-from sklearn import metrics, utils
+from sklearn import metrics, utils, model_selection
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from matplotlib import cm, gridspec, pyplot as plt
 
@@ -27,6 +27,14 @@ def import_data_from(path):
 
     return x, y, genres
 
+def cross_validation(X, y, clf, genres):
+    cv = len(np.unique(y))
+    cv_results = model_selection.cross_val_score(clf, X, y, cv=cv)
+    msg = "Accuracy: %f (%f)" % (cv_results.mean(), cv_results.std())
+    print(msg)
+
+    final_predictions = model_selection.cross_val_predict(clf, X, y, cv=cv)
+    plot_confusion_matrix(y, final_predictions, genres)
 
 def fast_fractional_fourier_transform(vec, exponent):
     # Compute Fourier transform powers of vec.
