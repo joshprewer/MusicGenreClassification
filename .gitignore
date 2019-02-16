@@ -3,7 +3,7 @@ img_data
 Tools/
 Datasets/ismir04_genre/audio/
 Datasets/GTZAN/audio/
-Datasets/fma_small/audio/
+Datasets/fma_small
 Source/Feature Extractors/rp_extract
 Source/Feature Selectors/LSTM-Music-Genre-Classification-master
 __pycache__
