@@ -1,50 +1,20 @@
-# feature extractoring and preprocessing data
-import librosa
 import pandas as pd
 import numpy as np
 from matplotlib import cm
 from matplotlib import gridspec
 from matplotlib import pyplot as plt
 import os
+import glob
 import pathlib
 import csv
 import tensorflow as tf
-import glob
-import math
-import os
-import seaborn as sns
-from tensorflow import keras
-from tensorflow.python.data import Dataset
 
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn import metrics
 
-from utilities import plot_confusion_matrix
+from utilities import plot_confusion_matrix, import_data_from
 
-cmap = plt.get_cmap('inferno')
-
-plt.figure(figsize=(10,10))
-genres = 'blues classical country disco hiphop jazz metal pop reggae rock'.split()
-
-header = 'filename chroma_stft rmse spectral_centroid spectral_bandwidth rolloff zero_crossing_rate'
-for i in range(1, 21):
-    header += f' mfcc{i}'
-header += ' label'
-header = header.split()
-
-data = pd.read_csv('newData.csv')
-data.head()
-
-# Dropping unneccesary columns
-data = data.drop(['filename'],axis=1)
-
-genre_list = data.iloc[:, -1]
-encoder = LabelEncoder()
-y = encoder.fit_transform(genre_list)
-
-scaler = StandardScaler()
-X = scaler.fit_transform(np.array(data.iloc[:, :-1], dtype = float))
+X, y, genres = import_data_from('Datasets/GTZAN/SSDFeaturesGTZAN.csv')
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25)
 
@@ -70,10 +40,10 @@ def create_training_input_fn(features, labels, batch_size, num_epochs=None, shuf
     # gets a good sampling of data, even when number of steps is small, we 
     # shuffle all the data before creating the Dataset object
     idx = np.random.permutation(features.index)
-    raw_features = {"mfccs":features.reindex(idx)}
+    raw_features = {"features":features.reindex(idx)}
     raw_targets = np.array(labels.reindex(idx).values)
    
-    ds = Dataset.from_tensor_slices((raw_features,raw_targets)) # warning: 2GB limit
+    ds = tf.data.Dataset.from_tensor_slices((raw_features,raw_targets)) # warning: 2GB limit
     ds = ds.batch(batch_size).repeat(num_epochs)
     
     if shuffle:
@@ -96,10 +66,10 @@ def create_predict_input_fn(features, labels, batch_size):
     A function that returns features and labels for predictions.
   """
   def _input_fn():
-    raw_features = {"mfccs": features.values}
+    raw_features = {"features": features.values}
     raw_targets = np.array(labels)
 
-    ds = Dataset.from_tensor_slices((raw_features, raw_targets)) # warning: 2GB limit
+    ds = tf.data.Dataset.from_tensor_slices((raw_features, raw_targets)) # warning: 2GB limit
     ds = ds.batch(batch_size)
        
     # Return the next batch of data.
@@ -163,7 +133,7 @@ def train_nn_classification_model(
 
   
   # Create feature columns.
-  feature_columns = [tf.feature_column.numeric_column('mfccs', shape=52)]
+  feature_columns = [tf.feature_column.numeric_column('features', shape=X.shape[1])]
 
   # Create a DNNClassifier object.
   my_optimizer = tf.train.AdagradOptimizer(learning_rate=learning_rate)
@@ -229,12 +199,12 @@ def train_nn_classification_model(
   plt.legend()
   plt.show()
   
-  plot_confusion_matrix(validation_targets, final_predictions)
+  plot_confusion_matrix(validation_targets, final_predictions, genres)
 
   return classifier
 
 classifier = train_nn_classification_model(
-    learning_rate=0.005,
+    learning_rate=0.05,
     steps=7700,
     batch_size=10,
     hidden_units=[100, 60, 30],
