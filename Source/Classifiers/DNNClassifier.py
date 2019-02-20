@@ -1,12 +1,8 @@
 import pandas as pd
 import numpy as np
-from matplotlib import cm
-from matplotlib import gridspec
 from matplotlib import pyplot as plt
 import os
 import glob
-import pathlib
-import csv
 import tensorflow as tf
 
 from sklearn.model_selection import train_test_split
@@ -24,17 +20,7 @@ validation_examples =  pd.DataFrame(data=X_test)
 validation_targets = pd.DataFrame(data=y_test)
 
 def create_training_input_fn(features, labels, batch_size, num_epochs=None, shuffle=True):
-  """A custom input_fn for sending MNIST data to the estimator for training.
-
-  Args:
-    features: The training features.
-    labels: The training labels.
-    batch_size: Batch size to use during training.
-
-  Returns:
-    A function that returns batches of training features and labels during
-    training.
-  """
+  
   def _input_fn(num_epochs=None, shuffle=True):
     # Input pipelines are reset with each call to .train(). To ensure model
     # gets a good sampling of data, even when number of steps is small, we 
@@ -87,27 +73,7 @@ def train_nn_classification_model(
     training_targets,
     validation_examples,
     validation_targets):
-  """Trains a neural network classification model for the MNIST digits dataset.
-  
-  In addition to training, this function also prints training progress information,
-  a plot of the training and validation loss over time, as well as a confusion
-  matrix.
-  
-  Args:
-    learning_rate: An `int`, the learning rate to use.
-    steps: A non-zero `int`, the total number of training steps. A training step
-      consists of a forward and backward pass using a single batch.
-    batch_size: A non-zero `int`, the batch size.
-    hidden_units: A `list` of int values, specifying the number of neurons in each layer.
-    training_examples: A `DataFrame` containing the training features.
-    training_targets: A `DataFrame` containing the training labels.
-    validation_examples: A `DataFrame` containing the validation features.
-    validation_targets: A `DataFrame` containing the validation labels.
-      
-  Returns:
-    The trained `DNNClassifier` object.
-  """
-
+ 
   periods = 10
   # Caution: input pipelines are reset with each call to train. 
   # If the number of steps is small, your model may never see most of the data.  
