@@ -16,6 +16,28 @@ class ObjectiveFunction(ObjectiveFunctionInterface):
     self._mpap = 0.25  # maximum pitch adjustment proportion (new parameter defined in pitch_adjustment()) - used for continuous variables only
     self._mpai = 2  # maximum pitch adjustment index (also defined in pitch_adjustment()) - used for discrete variables only
 
+    def get_fitness(self, vector):
+        input_X, input_Y = vector
+        
+        k = input_X.shape[1]
+        mutual_info = 0
+        index = 0 
+        for s in range(k):
+            for t in range(s + 1, k):
+                mutual_info += mutual_info_score(input_X[:, s], input_X[:, t])
+                index += 1
+        ri = mutual_info / index
+
+        mutual_info = 0 
+        index = 0
+        for s in range(k):
+            mutual_info += mutual_info_score(input_X[:, s], input_Y)
+            index += 1
+        rt = mutual_info / index
+ 
+        rc = (k * rt) / math.sqrt(k + k * (k - 1) * ri)
+        return rc
+
     def get_lower_bound(self, i):
         return self._lower_bounds[i]
 

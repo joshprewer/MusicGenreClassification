@@ -75,11 +75,7 @@ def train_nn_classification_model(
     validation_targets):
  
   periods = 10
-  # Caution: input pipelines are reset with each call to train. 
-  # If the number of steps is small, your model may never see most of the data.  
-  # So with multiple `.train` calls like this you may want to control the length 
-  # of training with num_epochs passed to the input_fn. Or, you can do a really-big shuffle, 
-  # or since it's in-memory data, shuffle all the data in the `input_fn`.
+  
   steps_per_period = steps / periods  
   # Create the input functions.
   predict_training_input_fn = create_predict_input_fn(
