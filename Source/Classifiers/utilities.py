@@ -27,6 +27,30 @@ def import_data_from(path):
 
     return x, y, genres
 
+def relative_correlation(weight, input_X, input_Y):
+    feature_sets = np.nonzero(weight)[0]
+    x = np.take(input_X, feature_sets, axis=1)
+        
+    k = x.shape[1]
+    mutual_info = 0
+    index = 0 
+    for s in range(k):
+        for t in range(s + 1, k):
+            mutual_info += metrics.mutual_info_score(x[:, s], x[:, t])
+            index += 1
+    ri = mutual_info / index
+
+    mutual_info = 0 
+    index = 0
+    for s in range(k):
+        mutual_info += metrics.mutual_info_score(x[:, s], input_Y)
+        index += 1
+    rt = mutual_info / index
+
+    rc = (k * rt) / math.sqrt(k + k * (k - 1) * ri)
+    return rc
+
+
 def cross_validation(X, y, clf, genres):
     cv = len(np.unique(y))
     cv_results = model_selection.cross_val_score(clf, X, y, cv=cv)
