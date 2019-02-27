@@ -3,7 +3,7 @@ import pandas as pd
 import itertools
 import math as math
 from librosa import util, filters
-from sklearn import metrics, utils, model_selection
+from sklearn import metrics, utils, model_selection, svm
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from matplotlib import cm, gridspec, pyplot as plt
 
@@ -49,6 +49,11 @@ def relative_correlation(weight, input_X, input_Y):
 
     rc = (k * rt) / math.sqrt(k + k * (k - 1) * ri)
     return rc
+
+def svm_objective_function(x, y):
+    classifier = svm.SVC(kernel='rbf', C=2, gamma=0.0625)
+    cv_results = model_selection.cross_val_score(classifier, x, y, cv=2)
+    return cv_results.mean()
 
 
 def cross_validation(X, y, clf, genres):

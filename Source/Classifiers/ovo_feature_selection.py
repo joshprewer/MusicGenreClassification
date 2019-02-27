@@ -31,7 +31,7 @@ def _fit_binary(estimator, X, y, classes=None):
     """Fit a single binary estimator."""
     unique_y = np.unique(y)
 
-    obj = harmony_run.objective_function(X, y, hmcr_proba=0.99, iteration=10000)
+    obj = harmony_run.objective_function(X, y, hmcr_proba=0.99, iteration=1000)
     hc = HarmonyCore.HarmonyCore(obj)
     hms, hms_scores, max_score_index = hc.run()
 
