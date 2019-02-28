@@ -1,78 +1,51 @@
-from pyharmonysearch import ObjectiveFunctionInterface, harmony_search
+from utilities import svm_objective_function
+import numpy as np
+import random
 
-class ObjectiveFunction(ObjectiveFunctionInterface):
+class SAHS(object):
+    def __init__(self,harmony_obj):
+        self.obj_func = harmony_obj
+        self.hmm_matrix = list()
+        matrix = []
+        for limit in self.obj_func.up_down_limit:
+            row = np.random.uniform(low=limit[0], high=limit[1], size=(1,self.obj_func.harmony_menmory_size))[0] 
+            matrix.append(row)
+        matrix = np.asarray(matrix).transpose().round(self.obj_func.weight_decimal)
+        self.hmm_matrix = matrix
 
-    def __init__(self):
-    self._lower_bounds = [0]
-    self._upper_bounds = [1]
-    self._variable = [True]
+    def run(self):
+        hmm_score_list = [0] * len(self.hmm_matrix)
+        for m_i in range(len(self.hmm_matrix)):
+            feature_set = self.hmm_matrix[m_i]
 
-    # define all input parameters
-    self._maximize = True  # do we maximize or minimize?
-    self._max_imp = 50000  # maximum number of improvisations
-    self._hms = 50  # harmony memory size
-    self._hmcr = 0.99  # harmony memory considering rate
-    self._par = 0.5  # pitch adjusting rate
-    self._mpap = 0.25  # maximum pitch adjustment proportion (new parameter defined in pitch_adjustment()) - used for continuous variables only
-    self._mpai = 2  # maximum pitch adjustment index (also defined in pitch_adjustment()) - used for discrete variables only
-
-    def get_fitness(self, vector):
-        input_X, input_Y = vector
+            score = self.obj_func.fitness(feature_set,self.obj_func.input_X,self.obj_func.input_Y)
+            hmm_score_list[m_i] = score
         
-        k = input_X.shape[1]
-        mutual_info = 0
-        index = 0 
-        for s in range(k):
-            for t in range(s + 1, k):
-                mutual_info += mutual_info_score(input_X[:, s], input_X[:, t])
-                index += 1
-        ri = mutual_info / index
+        for itera in range(self.obj_func.iteration):
+            feature_set = [0] * self.obj_func.vector_size
+            
+            for i in range(self.obj_func.vector_size):
+                if np.random.rand(1,)[0] < self.obj_func.hmcr_proba:
+                    hms_index = random.randint(0, self.obj_func.harmony_menmory_size - 1)                 
+                    new_feature = self.hmm_matrix[hms_index][i]
+                    
+                    if np.random.rand(1,)[0] < self.obj_func.adju_proba:                            
+                        new_feature = new_feature - (new_feature - self.obj_func.up_down_limit[i][0]) * np.random.rand(1,)[0]
+                    else:                        
+                        new_feature = new_feature + (self.obj_func.up_down_limit[i][1] - new_feature) * np.random.rand(1,)[0]
+                    
+                    test = round(new_feature) 
+                    feature_set[i] = test
+                
+                else: 
+                    feature_set[i] = random.randint(0, 1)
 
-        mutual_info = 0 
-        index = 0
-        for s in range(k):
-            mutual_info += mutual_info_score(input_X[:, s], input_Y)
-            index += 1
-        rt = mutual_info / index
- 
-        rc = (k * rt) / math.sqrt(k + k * (k - 1) * ri)
-        return rc
+            score = self.obj_func.fitness(feature_set, self.obj_func.input_X, self.obj_func.input_Y)
+            worst_score_index = hmm_score_list.index(min(hmm_score_list))
+            
+            if score > hmm_score_list[worst_score_index]:
+                self.hmm_matrix[worst_score_index] = feature_set
 
-    def get_lower_bound(self, i):
-        return self._lower_bounds[i]
-
-    def get_upper_bound(self, i):
-        return self._upper_bounds[i]
-
-    def is_variable(self, i):
-        return self._variable[i]
-
-    def is_discrete(self, i):
-        return False
-
-    def get_num_parameters(self):
-        return len(self._lower_bounds)
-
-    def use_random_seed(self):
-        return False
-
-    def get_max_imp(self):
-        return self._max_imp
-
-    def get_hmcr(self):
-        return self._hmcr
-
-    def get_par(self):
-        return self._par
-
-    def get_hms(self):
-        return self._hms
-
-    def get_mpai(self):
-        return self._mpai
-
-    def get_mpap(self):
-        return self._mpap
-
-    def maximize(self):
-        return self._maximize
+        return self.hmm_matrix,hmm_score_list,hmm_score_list.index(max(hmm_score_list))
+            
+            
