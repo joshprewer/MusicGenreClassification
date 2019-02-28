@@ -33,9 +33,8 @@ class SAHS(object):
                         new_feature = new_feature - (new_feature - self.obj_func.up_down_limit[i][0]) * np.random.rand(1,)[0]
                     else:                        
                         new_feature = new_feature + (self.obj_func.up_down_limit[i][1] - new_feature) * np.random.rand(1,)[0]
-                    
-                    test = round(new_feature) 
-                    feature_set[i] = test
+                                    
+                    feature_set[i] = round(new_feature)
                 
                 else: 
                     feature_set[i] = random.randint(0, 1)

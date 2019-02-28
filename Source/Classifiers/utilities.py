@@ -52,13 +52,13 @@ def relative_correlation(weight, input_X, input_Y):
 
 def svm_objective_function(x, y):
     classifier = svm.SVC(kernel='rbf', C=2, gamma=0.0625)
-    cv_results = model_selection.cross_val_score(classifier, x, y, cv=2)
+    cv_results = model_selection.cross_val_score(classifier, x, y, cv=2, scoring='accuracy')
     return cv_results.mean()
 
 
 def cross_validation(X, y, clf, genres):
     cv = len(np.unique(y))
-    cv_results = model_selection.cross_val_score(clf, X, y, cv=cv)
+    cv_results = model_selection.cross_val_score(clf, X, y, cv=cv, scoring='accuracy')
     msg = "Accuracy: %f (%f)" % (cv_results.mean(), cv_results.std())
     print(msg)
 
