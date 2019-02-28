@@ -87,7 +87,7 @@ class OneVsOneFeatureSelection(BaseEstimator, ClassifierMixin, MetaEstimatorMixi
         except AttributeError:
             self.pairwise_indices_ = None
 
-        return self
+        return estimators_indices
 
     @property
     def n_classes_(self):
