@@ -52,7 +52,7 @@ def relative_correlation(weight, input_X, input_Y):
 
 def svm_objective_function(x, y):
     classifier = svm.SVC(kernel='rbf', C=2, gamma=0.0625)
-    cv_results = model_selection.cross_val_score(classifier, x, y, cv=2, scoring='accuracy')
+    cv_results = model_selection.cross_val_score(classifier, x, y, cv=2, scoring='f1')
     return cv_results.mean()
 
 
@@ -100,8 +100,6 @@ from matplotlib import cm, gridspec, pyplot as plt
 def plot_confusion_matrix(validation_targets, final_predictions, genres):
 
 	cm = metrics.confusion_matrix(validation_targets, final_predictions)
-	# Normalize the confusion matrix by row (i.e by the number of samples
-	# in each class).
 	cm_normalized = cm.astype("float") / cm.sum(axis=1)[:, np.newaxis]
 	cmap="bone_r"
 	plt.imshow(cm, interpolation='nearest', cmap=cmap)
