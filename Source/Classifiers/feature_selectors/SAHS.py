@@ -44,6 +44,7 @@ class SAHS(object):
             
             if score > hmm_score_list[worst_score_index]:
                 self.hmm_matrix[worst_score_index] = feature_set
+                hmm_score_list[worst_score_index] = score
 
         return self.hmm_matrix,hmm_score_list,hmm_score_list.index(max(hmm_score_list))
             
