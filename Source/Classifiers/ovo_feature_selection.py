@@ -20,7 +20,8 @@ from sklearn.utils.metaestimators import _safe_split, if_delegate_has_method
 from sklearn.utils._joblib import Parallel
 from sklearn.utils._joblib import delayed
 from sklearn.externals.six.moves import zip as izip
-from feature_selectors import harmony_run, HarmonyCore
+from feature_selectors import harmony_run, CuckooSearch, SAHS, reliefFsfs
+import feature_selectors.binary_optimization as opt
 
 __all__ = [
     "OneVsOneFeatureSelection",
@@ -28,13 +29,19 @@ __all__ = [
 
 def _fit_binary(estimator, X, y, classes=None):
     """Fit a single binary estimator."""
-    unique_y = np.unique(y)
 
-    obj = harmony_run.objective_function(X, y, hmcr_proba=0.99, iteration=1)
-    hc = HarmonyCore.HarmonyCore(obj)
-    hms, hms_scores, max_score_index = hc.run()
+    # obj = SAHS.SAHSObjectiveFunction(X, y, harmony_menmory_size=50, hmcr_proba=0.99, iteration=10000)
+    # hc = SAHS.SAHS(obj)
+    # hms, hms_scores, max_score_index = hc.run()
+    # feature_sets = np.nonzero(hms[max_score_index])[0]
+    # max_score = max(hms_scores)
 
-    feature_sets = np.nonzero(hms[max_score_index])[0]
+    obj = CuckooSearch.Evaluate(X, y)
+    s, g, l = opt.BCS(obj, m_i=500)
+    feature_sets = np.nonzero(g)[0]
+
+    # relief = reliefFsfs.ReliefFSFS()
+    # feature_sets = relief.transform(X, y)
 
     return feature_sets
 

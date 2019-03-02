@@ -52,4 +52,48 @@ class SAHS(object):
 
         return self.hmm_matrix,hmm_score_list,hmm_score_list.index(max(hmm_score_list))
             
+
+class SAHSObjectiveFunction:
+
+    def __init__(self,
+                 input_X, 
+                 input_Y,
+                 iteration = 10000,
+                 weight_decimal = 0,
+                 sample_size = -1, 
+                 hmcr_proba = 0.7, 
+                 par_proba = 1.0, 
+                 adju_proba = 0.5,
+                 harmony_menmory_size = 50,
+                 up_down_limit = None):
+
+        self.input_X = input_X
+        self.input_Y = input_Y
+        self.iteration = iteration
+        self.weight_decimal = weight_decimal
+        if sample_size == -1:
+            self.sample_size = len(input_X)
+        else:
+            self.sample_size = sample_size
+        self.hmcr_proba = hmcr_proba
+        self.par_proba = par_proba
+        self.adju_proba = adju_proba
+        self.vector_size = len(input_X[0])
+        self.harmony_menmory_size = harmony_menmory_size
+        if up_down_limit == None:
+            self.up_down_limit = [[0,1]] * len(input_X[0])
+        else:
+            self.up_down_limit = up_down_limit
+        
+    def fitness(self,weight,input_X,input_Y):
+        feature_sets = np.nonzero(weight)[0]
+
+        if feature_sets.size == 0:
+            return 0
+        else:
+            x = np.take(input_X, feature_sets, axis=1)
+            xs, ys = utils.shuffle(x, input_Y)        
+            score = svm_objective_function(xs, ys)
+        
+            return score    
             
