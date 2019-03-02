@@ -1,7 +1,8 @@
 import numpy as np
 import pandas as pd
+import xml.etree.ElementTree as et
 import itertools
-import math as math
+import math
 from librosa import util, filters
 from sklearn import metrics, utils, model_selection, svm
 from sklearn.preprocessing import LabelEncoder, StandardScaler
@@ -20,12 +21,37 @@ def import_data_from(path):
     encoder = LabelEncoder()
     y = encoder.fit_transform(genre_list)
 
-    scaler = StandardScaler()
-    x = scaler.fit_transform(np.array(data.iloc[:, :-1], dtype = float))
+    # scaler = StandardScaler()
+    # x = scaler.fit_transform(np.array(data.iloc[:, :-1], dtype = float))
+    x = np.array(data.iloc[:, :-1], dtype = float)
 
     # x, y = utils.shuffle(x, y, random_state=0)
 
     return x, y, genres
+
+def load_xml_data(path):
+    tree = et.parse('Datasets/GTZAN/feature_values_1.xml')
+    root = tree.getroot()
+
+    X = np.atleast_2d(np.ndarray((1000)))
+    y = np.ndarray((1000), dtype='|U16')
+
+    index = 0
+    for data in root.iter('data_set'):
+        sample_data = np.empty([])
+        label = data.find('data_set_id')
+        path = os.path.dirname(label.text)
+        genre = os.path.basename(path)
+        y[index] = genre
+
+        for value in data.iter('v'):
+            sample_data = np.append(sample_data, float(value.text))
+
+        sample_data = np.delete(sample_data, 0)
+
+        X = np.resize(X, (1000, len(sample_data)))
+        X[index, :] = sample_data
+        index += 1
 
 def relative_correlation(weight, input_X, input_Y):
     feature_sets = np.nonzero(weight)[0]
@@ -51,14 +77,14 @@ def relative_correlation(weight, input_X, input_Y):
     return rc
 
 def svm_objective_function(x, y):
-    classifier = svm.SVC(kernel='rbf', C=2, gamma=0.0625)
-    cv_results = model_selection.cross_val_score(classifier, x, y, cv=2, scoring='f1')
+    classifier = svm.SVC(kernel='rbf', C=2, gamma=0.02)
+    cv_results = model_selection.cross_val_score(classifier, x, y, cv=2)
     return cv_results.mean()
 
 
 def cross_validation(X, y, clf, genres):
     cv = len(np.unique(y))
-    cv_results = model_selection.cross_val_score(clf, X, y, cv=cv, scoring='accuracy')
+    cv_results = model_selection.cross_val_score(clf, X, y, cv=cv)
     msg = "Accuracy: %f (%f)" % (cv_results.mean(), cv_results.std())
     print(msg)
 
