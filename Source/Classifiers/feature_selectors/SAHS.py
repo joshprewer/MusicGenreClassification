@@ -1,4 +1,5 @@
 from utilities import svm_objective_function
+from sklearn import utils
 import numpy as np
 import random
 

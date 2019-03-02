@@ -1,5 +1,3 @@
-import essentia
-from essentia.standard import *
 import scipy.stats as st
 import pandas as pd
 import numpy as np
@@ -9,7 +7,7 @@ import os
 import librosa
 from rp_extract import rp_extract
 
-fileName = 'SSDFeaturesGTZAN.csv'
+fileName = 'SSD+RPFeaturesGTZAN.csv'
 
 class feature_vector:
     def __init__(self, name):
@@ -37,6 +35,9 @@ header = 'filename'
 for feature in ssd_features:
     header += f' {feature.mean} {feature.variance} {feature.median} {feature.skewness} {feature.kurtosis} {feature.min} {feature.max}'
 
+for i in range (0, 60):
+    header += f' rh{i}'
+
 header += ' label'
 header = header.split()
     
@@ -46,18 +47,20 @@ with file:
     writer.writerow(header)
 genres = 'blues classical country disco hiphop jazz metal pop reggae rock'.split()
 
-spectrum = Spectrum()
-w = Windowing(type = 'hann')
-
 for g in genres:
-    for filename in os.listdir(f'./Datasets/GTZAN/audio/{g}'):
+    for filename in sorted(os.listdir(f'./Datasets/GTZAN/audio/{g}')):
         songname = f'./Datasets/GTZAN/audio/{g}/{filename}'
         y, sr = librosa.load(songname, mono=True, duration=30)
         to_append = f'{filename}'
         
-        ssd = rp_extract.rp_extract(wavedata=y, samplerate=sr, extract_ssd=True).get('ssd')
+        ssd_rp = rp_extract.rp_extract(wavedata=y, samplerate=sr, extract_ssd=True, extract_rh=True)
+        ssd = ssd_rp.get('ssd')
+        rp = ssd_rp.get('rh')
 
         for item in ssd:
+            to_append += f' {item}'
+
+        for item in rp:
             to_append += f' {item}'
         
         to_append += f' {g}'
