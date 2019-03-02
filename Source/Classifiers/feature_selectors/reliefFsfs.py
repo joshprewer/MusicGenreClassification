@@ -2,6 +2,57 @@ import numpy as np
 import pandas as pd
 from sklearn.neighbors import KDTree
 from sklearn import metrics, svm, model_selection, utils
+from utilities import svm_objective_function
+
+class ReliefFSFS(object):
+
+    def __init__(self, n_neighbors=100, n_features_to_keep=10):
+        """Sets up ReliefF to perform feature selection.
+        Parameters
+        ----------
+        n_neighbors: int (default: 100)
+            The number of neighbors to consider when assigning feature importance scores.
+            More neighbors results in more accurate scores, but takes longer.
+        Returns
+        -------
+        None
+        """
+        self.feature_scores = None
+        self.top_features = None
+        self.tree = None
+        self.n_neighbors = n_neighbors
+        self.n_features_to_keep = n_features_to_keep
+
+
+    def transform(self, X, y):
+        """Reduces the feature set down to the top `n_features_to_keep` features.
+        Parameters
+        ----------
+        X: array-like {n_samples, n_features}
+            Feature matrix to perform feature selection on
+        Returns
+        -------
+        X_reduced: array-like {n_samples, n_features_to_keep}
+            Reduced feature matrix
+        """
+        reliefF = ReliefF()
+        reliefF.fit(X, y)
+        weighted_features = reliefF.transform(X)
+
+        optimal_features = np.empty(0, dtype=int)
+        previous_results = 0
+        
+        for feature in weighted_features:
+            optimal_features = np.append(optimal_features, feature)
+            x_test = np.take(X, optimal_features, axis=1)
+            score = svm_objective_function(x_test, y)
+
+            if (score > previous_results):
+                previous_results = score
+            else:
+                optimal_features = np.delete(optimal_features, optimal_features.shape[0] - 1, axis=0)
+
+        return optimal_features
 
 class ReliefF(object):
 
@@ -76,56 +127,4 @@ class ReliefF(object):
         X_reduced: array-like {n_samples, n_features_to_keep}
             Reduced feature matrix
         """
-        return X[:, self.top_features[:len(X)]]
-
-class ReliefFSFS(object):
-
-    def __init__(self, n_neighbors=100, n_features_to_keep=10):
-        """Sets up ReliefF to perform feature selection.
-        Parameters
-        ----------
-        n_neighbors: int (default: 100)
-            The number of neighbors to consider when assigning feature importance scores.
-            More neighbors results in more accurate scores, but takes longer.
-        Returns
-        -------
-        None
-        """
-        self.feature_scores = None
-        self.top_features = None
-        self.tree = None
-        self.n_neighbors = n_neighbors
-        self.n_features_to_keep = n_features_to_keep
-
-
-    def transform(self, X, y, classifier):
-        """Reduces the feature set down to the top `n_features_to_keep` features.
-        Parameters
-        ----------
-        X: array-like {n_samples, n_features}
-            Feature matrix to perform feature selection on
-        Returns
-        -------
-        X_reduced: array-like {n_samples, n_features_to_keep}
-            Reduced feature matrix
-        """
-        reliefF = ReliefF()
-        reliefF.fit(X, y)
-        weighted_features = reliefF.transform(X)
-
-        optimal_features = np.atleast_2d()
-        optimal_features = np.resize(optimal_features, len(y))
-        previous_results = 0
-        
-        for feature in range(weighted_features.shape[1]):
-            feature_to_test = weighted_features[:, feature]
-            optimal_features = np.vstack((optimal_features, feature_to_test))
-            cv_results = model_selection.cross_val_score(classifier, pd.DataFrame(data=np.transpose(optimal_features)), y, cv=10)
-
-            if (cv_results.mean() > previous_results):
-                previous_results = cv_results.mean()
-            else:
-                optimal_features = np.delete(optimal_features, optimal_features.shape[0] - 1, axis=0)
-
-
-        return np.transpose(optimal_features)
+        return self.top_features
