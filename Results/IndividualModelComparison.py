@@ -1,10 +1,12 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-fs_data = np.load('Results/OvoFSIndividualScores.npy')
+cs_data = np.load('Results/OvoCSFSIndividualScores.npy')
+hs_data = np.load('Results/OvoFSIndividualScores.npy')
 no_fs_data = np.load('Results/OvoNoFSIndividualScores.npy')
 
-fs_scores = fs_data[0, :, 1]
+cs_scores = cs_data[0, :]
+hs_scores = hs_data[0, :, 1]
 no_fs_scores = no_fs_data[0, :]
 labels = no_fs_data[1, :]
 
@@ -29,13 +31,14 @@ for item in labels:
 
 fig, ax = plt.subplots()
 
-ind = np.arange(len(fs_scores))
-width = 0.4
-p1 = plt.bar(ind, fs_scores, width, color='r')
-p2 = plt.bar(ind+width, no_fs_scores, width, color='b')
+ind = np.arange(len(hs_scores))
+width = 0.2
+p1 = plt.bar(ind, cs_scores, width, color='r')
+p2 = plt.bar(ind+width, hs_scores, width, color='b')
+p3 = plt.bar(ind+width+width, no_fs_scores, width, color='g')
 
 ax.set_title('Individual Classifer Scores')
-ax.set_xticks(ind + width / 2)
+ax.set_xticks(ind + width / 3)
 ax.set_xticklabels(tick_labels)
 ax.set_ylim([0, 1])
 ax.autoscale_view()
