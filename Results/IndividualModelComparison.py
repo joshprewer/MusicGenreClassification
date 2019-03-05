@@ -1,14 +1,17 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-cs_data = np.load('Results/OvoCSFSIndividualScores.npy')
-hs_data = np.load('Results/OvoFSIndividualScores.npy')
-no_fs_data = np.load('Results/OvoNoFSIndividualScores.npy')
+score_data = np.load('Results/OvoIndividualScores.npy')
+labels = np.load('Results/OvoNoFSIndividualScores.npy')[1, :]
 
-cs_scores = cs_data[0, :]
-hs_scores = hs_data[0, :, 1]
-no_fs_scores = no_fs_data[0, :]
-labels = no_fs_data[1, :]
+scores = np.empty((score_data.shape[0], 3)) 
+
+for idx, item in enumerate(score_data):
+    scores[idx] = np.asarray([item[0], item[2], item[4]])
+
+cs_scores = scores[:, 0]
+hs_scores = scores[:, 1]
+no_fs_scores = scores[:, 2]
 
 tick_labels = np.empty(labels.shape, dtype='|U16')
 label_dict =  {
@@ -44,4 +47,3 @@ ax.set_ylim([0, 1])
 ax.autoscale_view()
 
 plt.show()
-
