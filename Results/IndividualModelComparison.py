@@ -42,8 +42,9 @@ p3 = plt.bar(ind+width+width, no_fs_scores, width, color='g')
 
 ax.set_title('Individual Classifer Scores')
 ax.set_xticks(ind + width / 3)
-ax.set_xticklabels(tick_labels)
+ax.set_xticklabels(tick_labels, fontsize=7)
 ax.set_ylim([0, 1])
+ax.legend((p1[0], p2[0], p3[0]), ('Cuckoo Search', 'Self-Adapting Harmony Search', 'No FS'))
 ax.autoscale_view()
 
 plt.show()
