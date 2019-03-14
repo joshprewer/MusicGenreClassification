@@ -1,5 +1,4 @@
-from utilities import svm_objective_function
-from sklearn import utils
+from sklearn import utils, model_selection
 import numpy as np
 import random
 
@@ -59,6 +58,7 @@ class SAHSObjectiveFunction:
     def __init__(self,
                  input_X, 
                  input_Y,
+                 clf,
                  iteration = 10000,
                  weight_decimal = 0,
                  sample_size = -1, 
@@ -70,6 +70,7 @@ class SAHSObjectiveFunction:
 
         self.input_X = input_X
         self.input_Y = input_Y
+        self.clf = clf
         self.iteration = iteration
         self.weight_decimal = weight_decimal
         if sample_size == -1:
@@ -93,8 +94,10 @@ class SAHSObjectiveFunction:
             return 0
         else:
             x = np.take(input_X, feature_sets, axis=1)
-            xs, ys = utils.shuffle(x, input_Y)        
-            score = svm_objective_function(xs, ys)
+            xs, ys = utils.shuffle(x, input_Y)
+
+            cv = len(np.unique(input_Y))
+            cv_results = model_selection.cross_val_score(self.clf, xs, ys, cv=cv)            
         
-            return score    
+            return cv_results.mean()
             

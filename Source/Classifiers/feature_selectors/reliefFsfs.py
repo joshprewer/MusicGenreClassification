@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 from sklearn.neighbors import KDTree
 from sklearn import metrics, svm, model_selection, utils
-from utilities import svm_objective_function
 
 class ReliefFSFS(object):
 
@@ -24,7 +23,7 @@ class ReliefFSFS(object):
         self.n_features_to_keep = n_features_to_keep
 
 
-    def transform(self, X, y):
+    def transform(self, X, y, clf):
         """Reduces the feature set down to the top `n_features_to_keep` features.
         Parameters
         ----------
@@ -45,7 +44,11 @@ class ReliefFSFS(object):
         for feature in weighted_features:
             optimal_features = np.append(optimal_features, feature)
             x_test = np.take(X, optimal_features, axis=1)
-            score = svm_objective_function(x_test, y)
+            xs, ys = utils.shuffle(x_test, y)
+
+            cv = len(np.unique(ys))
+            cv_results = model_selection.cross_val_score(clf, xs, ys, cv=cv)            
+            score = cv_results.mean()
 
             if (score > previous_results):
                 previous_results = score

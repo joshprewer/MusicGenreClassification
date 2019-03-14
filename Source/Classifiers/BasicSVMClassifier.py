@@ -1,28 +1,43 @@
 import pandas as pd
 import numpy as np
-import itertools
-import sys
-from sklearn import metrics, svm, model_selection, utils, pipeline, decomposition
-from sklearn.feature_selection import SelectPercentile, chi2
-from sklearn.preprocessing import LabelEncoder, StandardScaler
-from matplotlib import cm, gridspec, pyplot as plt
-from utilities import plot_confusion_matrix, import_data_from
-from reliefFsfs import ReliefFSFS
+from sklearn import metrics, svm, model_selection, utils, pipeline, decomposition, multiclass, mixture
+from sklearn.preprocessing import LabelEncoder, StandardScaler, MinMaxScaler
+from utilities import plot_confusion_matrix, import_data_from, cross_validation, load_xml_data
+import ovo_feature_selection
+import ovo_multi_features
+import os
+from feature_selectors import CuckooSearch, SAHS, ReliefFSFS
+from skfeature.function.information_theoretical_based import MRMR
 
-X, y, genres = import_data_from('MIR/GTZAN/SSDFeaturesGTZAN.csv')
+# X = np.genfromtxt('Test.csv', delimiter=',')
+# remaining_x = np.genfromtxt('Datasets/GTZAN/NewSAHSRemaining.csv', delimiter=',')
+# other_remaining_x, y, genres = import_data_from('Datasets/GTZAN/SSD+RPFeaturesGTZAN.csv')
+# X = np.hstack((X, remaining_x))
+# X = np.hstack((X, other_remaining_x))
+X, y, genres = import_data_from('FeaturesGTZAN.csv')
+remaining_x = np.genfromtxt('RemainingFeaturesGTZAN.csv', delimiter=',')
+X = np.hstack((X, remaining_x))
 
-# reliefsfs = ReliefFSFS()
+scale = MinMaxScaler((-1, 1))
+scaled_x = scale.fit_transform(X)
 
-# optimal_features = reliefsfs.transform(X, y)
+test = MRMR.mrmr(scaled_x, y)
 
-optimal_features = pd.DataFrame(data=X)
-classifier = svm.SVC(kernel='rbf', C=10, gamma='auto')
-transform = decomposition.PCA(n_components=0.99)
-clf = pipeline.make_pipeline((transform), (classifier))
+param_grid = [
+  {'C': [0.25, 0.5, 1, 2, 4, 8, 16], 'gamma': [0.03125, 0.0625, 0.125, 0.25, 0.5, 1, 2]},
+]
 
-cv_results = model_selection.cross_val_score(clf, optimal_features, y, cv=10)
-msg = "Accuracy: %f (%f)" % (cv_results.mean(), cv_results.std())
-print(msg)
+xs, ys = utils.shuffle(scaled_x, y)
+classifier = svm.SVC(kernel='rbf', C=3, gamma=0.02)
+# feature_sets = ovo_feature_selection.OneVsOneFeatureSelection(classifier).fit(xs, ys)
 
-final_predictions = model_selection.cross_val_predict(clf, optimal_features, y, cv=10)
-plot_confusion_matrix(y, final_predictions, genres)
+# feature_sets = np.asarray(feature_sets)
+# feature_sets = np.asarray(feature_sets[0, :])
+
+# clf = ovo_multi_features.OneVsOneClassifier(classifier, feature_sets)
+# clf = multiclass.OneVsOneClassifier(classifier)
+
+# gs = model_selection.GridSearchCV(classifier, param_grid, cv=10)
+# clf = gs.fit(xs, ys)
+
+cross_validation(xs, ys, classifier, genres)
