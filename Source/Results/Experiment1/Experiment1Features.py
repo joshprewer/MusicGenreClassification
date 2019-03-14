@@ -38,4 +38,3 @@ ax.legend((p1[0], p2[0], p3[0]), ('Timbre', 'Tonality', 'Rhythm'))
 ax.set_ylim([0, 428])
 
 plt.show()
-plt.savefig('./Source/Results/Experiment1/GTZAN/CM/Test')
