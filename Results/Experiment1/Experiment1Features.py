@@ -30,18 +30,18 @@ feature_indexs[0] = 0
  
 gtzan_data = [
     np.arange(max_n_features),
-    np.genfromtxt('./Source/Results/Experiment1/GTZAN/ovo_reliefF.csv', delimiter=',').astype(int),
-    np.genfromtxt('./Source/Results/Experiment1/GTZAN/ovo_hs.csv', delimiter=',').astype(int),
-    np.genfromtxt('./Source/Results/Experiment1/GTZAN/ovo_cs.csv', delimiter=',').astype(int),
-    np.genfromtxt('./Source/Results/Experiment1/GTZAN/ovo_dfa.csv', delimiter=',').astype(int)
+    np.genfromtxt('./Results/Experiment1/GTZAN/FeatureSets/ovo_reliefF.csv', delimiter=',').astype(int),
+    np.genfromtxt('./Results/Experiment1/GTZAN/FeatureSets/ovo_hs.csv', delimiter=',').astype(int),
+    np.genfromtxt('./Results/Experiment1/GTZAN/FeatureSets/ovo_cs.csv', delimiter=',').astype(int),
+    np.genfromtxt('./Results/Experiment1/GTZAN/FeatureSets/ovo_dfa.csv', delimiter=',').astype(int)
 ]
 
 ismir_data = [
     np.arange(max_n_features),
-    np.genfromtxt('./Source/Results/Experiment1/ISMIR/ovo_reliefF.csv', delimiter=',').astype(int),
-    np.genfromtxt('./Source/Results/Experiment1/ISMIR/ovo_hs.csv', delimiter=',').astype(int),
-    np.genfromtxt('./Source/Results/Experiment1/ISMIR/ovo_cs.csv', delimiter=',').astype(int),
-    np.genfromtxt('./Source/Results/Experiment1/ISMIR/ovo_dfa.csv', delimiter=',').astype(int)
+    np.genfromtxt('./Results/Experiment1/ISMIR/FeatureSets/ovo_reliefF.csv', delimiter=',').astype(int),
+    np.genfromtxt('./Results/Experiment1/ISMIR/FeatureSets/ovo_hs.csv', delimiter=',').astype(int),
+    np.genfromtxt('./Results/Experiment1/ISMIR/FeatureSets/ovo_cs.csv', delimiter=',').astype(int),
+    np.genfromtxt('./Results/Experiment1/ISMIR/FeatureSets/ovo_dfa.csv', delimiter=',').astype(int)
 ]
 
 gtzan_X, gtzan_y, gtzan_genres = import_data_from('./Datasets/GTZAN/FeaturesGTZAN.csv')
@@ -68,7 +68,7 @@ p4 = plt.bar(ind, pca, width, bottom=np.array(tonality)+np.array(timbre)+np.arra
 
 plt.title('GTZAN Feature Subsets')
 plt.ylabel('Number of features')
-plt.xticks(ind, ['No FS', 'PCA', 'ReliefF', 'SAHS', 'BCS', 'BDFA'])
+plt.xticks(ind, ['No FS', 'PCA', 'ReliefF-SFS', 'SAHS', 'BCS', 'BDFA'])
 plt.legend((p1[0], p2[0], p3[0], p4[0]), ('Timbre', 'Tonality', 'Rhythm', 'PCA'))
 plt.ylim([0, max_n_features])
 
@@ -91,7 +91,7 @@ p4 = plt.bar(ind, pca, width, bottom=np.array(tonality)+np.array(timbre)+np.arra
 
 plt.title('ISMIR Feature Subsets')
 plt.ylabel('Number of features')
-plt.xticks(ind, ['No FS', 'PCA', 'ReliefF', 'SAHS', 'BCS', 'BDFA'])
+plt.xticks(ind, ['No FS', 'PCA', 'ReliefF-SFS', 'SAHS', 'BCS', 'BDFA'])
 plt.legend((p1[0], p2[0], p3[0], p4[0]), ('Timbre', 'Tonality', 'Rhythm', 'PCA'))
 plt.ylim([0, max_n_features])
 plt.show()
