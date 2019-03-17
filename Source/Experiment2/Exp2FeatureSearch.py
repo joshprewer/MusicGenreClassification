@@ -21,6 +21,3 @@ ova_clf = ovo_feature_selection.OneVsRestClassifier(clf)
 ovo_feature_sets = ovo_clf.fit(scaled_x, y)[0]
 np.save('ind_ovo_fs', ovo_feature_sets)
 
-# # Ova Results
-# ova_feature_sets = ova_clf.fit(scaled_x, y)
-# np.save('ind_ova_fs', ova_feature_sets)
