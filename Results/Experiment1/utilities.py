@@ -134,7 +134,7 @@ def plot_confusion_matrix(validation_targets, final_predictions, genres):
 	cm = metrics.confusion_matrix(validation_targets, final_predictions)
 	cm_normalized = cm.astype("float") / cm.sum(axis=1)[:, np.newaxis]
 	cmap="bone_r"
-	plt.imshow(cm, interpolation='nearest', cmap=cmap)
+	plt.imshow(cm_normalized, interpolation='nearest', cmap=cmap)
 	plt.title("Confusion matrix")
 	plt.xticks(np.arange(len(genres)), genres, rotation=45)
 	plt.yticks(np.arange(len(genres)), genres)
