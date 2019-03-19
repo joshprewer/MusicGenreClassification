@@ -22,37 +22,36 @@ def process_data(data):
 
     return x, y, yerr
 
-
 exp1_gtzan_data = [
-    np.load('./Source/Results/Experiment1/GTZAN/st_no_fs_score.npy'),
-    np.load('./Source/Results/Experiment1/GTZAN/st_pca_score.npy'), 
-    np.load('./Source/Results/Experiment1/GTZAN/st_reliefF_score.npy'),
-    np.load('./Source/Results/Experiment1/GTZAN/st_hs_score.npy'),
-    np.load('./Source/Results/Experiment1/GTZAN/st_cs_score.npy'),
-    np.load('./Source/Results/Experiment1/GTZAN/st_dfa_score.npy')
+    np.load('./Results/Experiment1/GTZAN/Scores/st_no_fs_score.npy'),
+    np.load('./Results/Experiment1/GTZAN/Scores/st_pca_score.npy'), 
+    np.load('./Results/Experiment1/GTZAN/Scores/st_reliefF_score.npy'),
+    np.load('./Results/Experiment1/GTZAN/Scores/st_hs_score.npy'),
+    np.load('./Results/Experiment1/GTZAN/Scores/st_cs_score.npy'),
+    np.load('./Results/Experiment1/GTZAN/Scores/st_dfa_score.npy')
 ]
 
 exp1_ismir_data = [
-    np.load('./Source/Results/Experiment1/ISMIR/st_no_fs_f1.npy'),
-    np.load('./Source/Results/Experiment1/ISMIR/st_pca_f1.npy'),
-    np.load('./Source/Results/Experiment1/ISMIR/st_reliefF_f1.npy'),
-    np.load('./Source/Results/Experiment1/ISMIR/st_hs_f1.npy'),
-    np.load('./Source/Results/Experiment1/ISMIR/st_cs_f1.npy'),
-    np.load('./Source/Results/Experiment1/ISMIR/st_dfa_f1.npy')
+    np.load('./Results/Experiment1/ISMIR/Scores/st_no_fs_f1.npy'),
+    np.load('./Results/Experiment1/ISMIR/Scores/st_pca_f1.npy'),
+    np.load('./Results/Experiment1/ISMIR/Scores/st_reliefF_f1.npy'),
+    np.load('./Results/Experiment1/ISMIR/Scores/st_hs_f1.npy'),
+    np.load('./Results/Experiment1/ISMIR/Scores/st_cs_f1.npy'),
+    np.load('./Results/Experiment1/ISMIR/Scores/st_dfa_f1.npy')
 ]
 
 exp2_gtzan_data = [
-    np.load('./Source/Results/Experiment2/GTZAN/no_fs_score.npy'),
-    np.load('./Source/Results/Experiment2/GTZAN/hs_score.npy'),
-    np.load('./Source/Results/Experiment2/GTZAN/cs_score.npy'),
-    np.load('./Source/Results/Experiment2/GTZAN/dfa_score.npy')
+    np.load('./Results/Experiment2/GTZAN/Scores/no_fs_score.npy'),
+    np.load('./Results/Experiment2/GTZAN/Scores/hs_score.npy'),
+    np.load('./Results/Experiment2/GTZAN/Scores/cs_score.npy'),
+    np.load('./Results/Experiment2/GTZAN/Scores/dfa_score.npy')
 ]
 
 exp2_ismir_data = [
-    np.load('./Source/Results/Experiment2/ISMIR/no_fs_f1.npy'),
-    np.load('./Source/Results/Experiment2/ISMIR/hs_f1.npy'),
-    np.load('./Source/Results/Experiment2/ISMIR/cs_f1.npy'),
-    np.load('./Source/Results/Experiment2/ISMIR/dfa_f1.npy')
+    np.load('./Results/Experiment2/ISMIR/Scores/no_fs_f1.npy'),
+    np.load('./Results/Experiment2/ISMIR/Scores/hs_f1.npy'),
+    np.load('./Results/Experiment2/ISMIR/Scores/cs_f1.npy'),
+    np.load('./Results/Experiment2/ISMIR/Scores/dfa_f1.npy')
 ]
 
 plt.figure(1)
@@ -68,6 +67,10 @@ plt.title('Experiment 1: GTZAN')
 plt.ylabel('Classification accuracy (%)')
 plt.grid(True, linestyle='--')
 
+stat, pvalue = scipy.stats.f_oneway(exp1_gtzan_data[0], exp1_gtzan_data[1], exp1_gtzan_data[3], exp1_gtzan_data[4], exp1_gtzan_data[5])
+msg = 'GTZAN Exp 1 p-value: %f' % (pvalue)
+print(msg)
+
 plt.figure(2)
 x2, y2, yerr2 = process_data(exp1_ismir_data)
 plt.errorbar(x2, y2, yerr=yerr2, fmt='x')
@@ -76,6 +79,10 @@ plt.ylim(0.55, 0.84)
 plt.title('Experiment 1: ISMIR')
 plt.ylabel('F1 Score')
 plt.grid(True, linestyle='--')
+
+stat, pvalue = scipy.stats.f_oneway(exp1_ismir_data[0], exp1_ismir_data[1], exp1_ismir_data[3], exp1_ismir_data[4], exp1_ismir_data[5])
+msg = 'Ismir Exp 1 p-value: %f' % (pvalue)
+print(msg)
 
 # Exp2 Results
 plt.figure(3)
@@ -89,6 +96,10 @@ plt.title('Experiment 2: GTZAN')
 plt.ylabel('Classification accuracy (%)')
 plt.grid(True, linestyle='--')
 
+stat, pvalue = scipy.stats.f_oneway(exp2_gtzan_data[0], exp2_gtzan_data[1], exp2_gtzan_data[2], exp2_gtzan_data[3])
+msg = 'GTZAN Exp 2 p-value: %f' % (pvalue)
+print(msg)
+
 plt.figure(4)
 x4, y4, yerr4 = process_data(exp2_ismir_data)
 plt.errorbar(x4, y4, yerr=yerr4, fmt='x')
@@ -97,6 +108,11 @@ plt.ylim(0.55, 0.84)
 plt.title('Experiment 2: ISMIR')
 plt.ylabel('F1 Score')
 plt.grid(True, linestyle='--')
+
+stat, pvalue = scipy.stats.f_oneway(exp2_ismir_data[0], exp2_ismir_data[1], exp2_ismir_data[2], exp2_ismir_data[3])
+msg = 'Ismir Exp 2 p-value: %f' % (pvalue)
+print(msg)
+
 plt.show()
     
 
