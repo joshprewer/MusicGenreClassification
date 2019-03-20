@@ -9,7 +9,14 @@ import glob
 from rp_extract import rp_extract
 from mutagen.mp3 import MP3
 
-fileName = 'FeaturesISMIR.csv'
+csv_filename = 'FeaturesISMIR.csv'
+header = 'filename'
+    
+file = open(csv_filename, 'w', newline='')
+with file:
+    writer = csv.writer(file)
+    writer.writerow(header)
+
 genres = 'classical electronic jazz metal pop punk rock world'.split()
 
 for g in genres:
@@ -62,7 +69,7 @@ for g in genres:
         to_append += f' {tempo[0]}'
 
         to_append += f' {g}'
-        file = open(fileName, 'a', newline='')
+        file = open(csv_filename, 'a', newline='')
         with file:
             writer = csv.writer(file)
             writer.writerow(to_append.split())

@@ -1,51 +1,19 @@
 import scipy.stats as st
 import pandas as pd
 import numpy as np
-import pathlib
 import csv
 import os
 import librosa
 from rp_extract import rp_extract
 
-fileName = 'FeaturesGTZAN.csv'
-
-class ssd_feature_vector:
-    def __init__(self, name):
-        self.mean = f'{name}'
-        self.variance = f'{name}_var'
-        self.median= f'{name}_med'
-        self.skewness = f'{name}_skew'
-        self.kurtosis = f'{name}_kurt'
-        self.min = f'{name}_min'
-        self.max = f'{name}_max'
-
-        self.function = None
-        self.data = None
-
-    def get_features(self):
-        return f' {np.mean(self.data)} {np.std(self.data)} {np.median(self.data)} {st.skew(self.data)} {st.kurtosis(self.data)} {np.min(self.data)} {np.max(self.data)}'
-
-
-ssd_features = []
-for i in range(0, 24):
-    ssd_features = np.append(ssd_features, ssd_feature_vector(f'ssd{i}'))
-
+csv_filename = 'FeaturesGTZAN.csv'
 header = 'filename'
-
-for feature in ssd_features:
-    header += f' {feature.mean} {feature.variance} {feature.median} {feature.skewness} {feature.kurtosis} {feature.min} {feature.max}'
-
-for i in range (0, 24):
-    header += f' rp{i}'
-    header += f' rp{i}_std'
-
-# header += ' label'
-# header = header.split()
     
-# file = open(fileName, 'w', newline='')
-# with file:
-#     writer = csv.writer(file)
-#     writer.writerow(header)
+file = open(csv_filename, 'w', newline='')
+with file:
+    writer = csv.writer(file)
+    writer.writerow(header)
+
 genres = 'blues classical country disco hiphop jazz metal pop reggae rock'.split()
 
 for g in genres:
@@ -95,7 +63,7 @@ for g in genres:
         to_append += f' {tempo[0]}'
 
         to_append += f' {g}'
-        file = open(fileName, 'a', newline='')
+        file = open(csv_filename, 'a', newline='')
         with file:
             writer = csv.writer(file)
             writer.writerow(to_append.split())
