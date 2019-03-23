@@ -12,7 +12,7 @@ X = np.hstack((X, remaining_x))
 scale = MinMaxScaler((-1, 1))
 scaled_x = scale.fit_transform(X)
 
-ovo_feature_sets = np.load('./Source/Results/Experiment2/ISMIR/ind_ovo_fs.npy')
+ovo_feature_sets = np.load('./Results/Experiment2/ISMIR/ind_ovo_fs.npy')
 
 ovo_fs_hs = ovo_feature_sets[:, 0]
 ovo_fs_cs = ovo_feature_sets[:, 1]

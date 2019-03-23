@@ -22,13 +22,28 @@ def process_data(data):
 
     return x, y, yerr
 
+def normality_test(data):
+    for result in data:
+        d, p = scipy.stats.normaltest(result)
+        median = np.median(result)
+        print(round(p, 3))
+
+def plot_results(x, y, yerr, title, xticks):
+    plt.errorbar(x, y, yerr=yerr, fmt='x')
+    plt.xticks(x, xticks)
+    plt.ylim(0.55, 0.8)
+    plt.title(title)
+    plt.ylabel('F1 Score')
+    plt.grid(True, linestyle='--')
+
+
 exp1_gtzan_data = [
-    np.load('./Results/Experiment1/GTZAN/Scores/st_no_fs_score.npy'),
-    np.load('./Results/Experiment1/GTZAN/Scores/st_pca_score.npy'), 
-    np.load('./Results/Experiment1/GTZAN/Scores/st_reliefF_score.npy'),
-    np.load('./Results/Experiment1/GTZAN/Scores/st_hs_score.npy'),
-    np.load('./Results/Experiment1/GTZAN/Scores/st_cs_score.npy'),
-    np.load('./Results/Experiment1/GTZAN/Scores/st_dfa_score.npy')
+    np.load('./Results/Experiment1/GTZAN/Scores/st_no_fs_f1.npy'),
+    np.load('./Results/Experiment1/GTZAN/Scores/st_pca_f1.npy'),
+    np.load('./Results/Experiment1/GTZAN/Scores/st_reliefF_f1.npy'),
+    np.load('./Results/Experiment1/GTZAN/Scores/st_hs_f1.npy'),
+    np.load('./Results/Experiment1/GTZAN/Scores/st_cs_f1.npy'),
+    np.load('./Results/Experiment1/GTZAN/Scores/st_dfa_f1.npy')
 ]
 
 exp1_ismir_data = [
@@ -41,10 +56,10 @@ exp1_ismir_data = [
 ]
 
 exp2_gtzan_data = [
-    np.load('./Results/Experiment2/GTZAN/Scores/no_fs_score.npy'),
-    np.load('./Results/Experiment2/GTZAN/Scores/hs_score.npy'),
-    np.load('./Results/Experiment2/GTZAN/Scores/cs_score.npy'),
-    np.load('./Results/Experiment2/GTZAN/Scores/dfa_score.npy')
+    np.load('./Results/Experiment2/GTZAN/Scores/no_fs_f1.npy'),
+    np.load('./Results/Experiment2/GTZAN/Scores/hs_f1.npy'),
+    np.load('./Results/Experiment2/GTZAN/Scores/cs_f1.npy'),
+    np.load('./Results/Experiment2/GTZAN/Scores/dfa_f1.npy')
 ]
 
 exp2_ismir_data = [
@@ -54,62 +69,82 @@ exp2_ismir_data = [
     np.load('./Results/Experiment2/ISMIR/Scores/dfa_f1.npy')
 ]
 
-plt.figure(1)
+exp1_gtzan_time = [
+    np.load('./Results/Experiment1/GTZAN/Scores/st_no_fs_time.npy'),
+    np.load('./Results/Experiment1/GTZAN/Scores/st_pca_time.npy'),
+    np.load('./Results/Experiment1/GTZAN/Scores/st_reliefF_time.npy'),
+    np.load('./Results/Experiment1/GTZAN/Scores/st_hs_time.npy'),
+    np.load('./Results/Experiment1/GTZAN/Scores/st_cs_time.npy'),
+    np.load('./Results/Experiment1/GTZAN/Scores/st_dfa_time.npy')
+]
+
+exp1_ismir_time = [
+    np.load('./Results/Experiment1/ISMIR/Scores/st_no_fs_time.npy'),
+    np.load('./Results/Experiment1/ISMIR/Scores/st_pca_time.npy'),
+    np.load('./Results/Experiment1/ISMIR/Scores/st_reliefF_time.npy'),
+    np.load('./Results/Experiment1/ISMIR/Scores/st_hs_time.npy'),
+    np.load('./Results/Experiment1/ISMIR/Scores/st_cs_time.npy'),
+    np.load('./Results/Experiment1/ISMIR/Scores/st_dfa_time.npy')
+]
+
+exp2_gtzan_time = [
+    np.load('./Results/Experiment2/GTZAN/Scores/no_fs_time.npy'),
+    np.load('./Results/Experiment2/GTZAN/Scores/hs_time.npy'),
+    np.load('./Results/Experiment2/GTZAN/Scores/cs_time.npy'),
+    np.load('./Results/Experiment2/GTZAN/Scores/dfa_time.npy')
+]
+
+exp2_ismir_timre = [
+    np.load('./Results/Experiment2/ISMIR/Scores/no_fs_time.npy'),
+    np.load('./Results/Experiment2/ISMIR/Scores/hs_time.npy'),
+    np.load('./Results/Experiment2/ISMIR/Scores/cs_time.npy'),
+    np.load('./Results/Experiment2/ISMIR/Scores/dfa_time.npy')
+]
+
 
 # Exp1 Results
+plt.figure(1)
 x, y, yerr = process_data(exp1_gtzan_data)
-y = y * 100
-yerr = yerr * 100
-plt.errorbar(x, y, yerr=yerr, fmt='x')
-plt.xticks(x, ['No FS', 'PCA', 'ReliefF-SFS', 'SAHS', 'BCS', 'BDFA'])
-plt.ylim(55, 84)
-plt.title('Experiment 1: GTZAN')
-plt.ylabel('Classification accuracy (%)')
-plt.grid(True, linestyle='--')
+plot_results(x, y, yerr, 'Experiment 1: GTZAN', ['No FS', 'PCA', 'ReliefF-SFS', 'SAHS', 'BCS', 'BDFA'])
 
-stat, pvalue = scipy.stats.f_oneway(exp1_gtzan_data[0], exp1_gtzan_data[1], exp1_gtzan_data[3], exp1_gtzan_data[4], exp1_gtzan_data[5])
+print('GTZAN Exp1 Normality Test')
+normality_test(exp1_gtzan_data)
+
+stat, pvalue = scipy.stats.f_oneway(exp1_gtzan_data[3], exp1_gtzan_data[4], exp1_gtzan_data[5])
 msg = 'GTZAN Exp 1 p-value: %f' % (pvalue)
 print(msg)
 
 plt.figure(2)
 x2, y2, yerr2 = process_data(exp1_ismir_data)
-plt.errorbar(x2, y2, yerr=yerr2, fmt='x')
-plt.xticks(x, ['No FS', 'PCA', 'ReliefF-SFS', 'SAHS', 'BCS', 'BDFA'])
-plt.ylim(0.55, 0.84)
-plt.title('Experiment 1: ISMIR')
-plt.ylabel('F1 Score')
-plt.grid(True, linestyle='--')
+plot_results(x2, y2, yerr2, 'Experiment 1: ISMIR', ['No FS', 'PCA', 'ReliefF-SFS', 'SAHS', 'BCS', 'BDFA'])
 
-stat, pvalue = scipy.stats.f_oneway(exp1_ismir_data[0], exp1_ismir_data[1], exp1_ismir_data[3], exp1_ismir_data[4], exp1_ismir_data[5])
+print('ISMIR Exp1 Normality Test')
+normality_test(exp1_ismir_data)
+
+stat, pvalue = scipy.stats.f_oneway(exp1_ismir_data[3], exp1_ismir_data[4], exp1_ismir_data[5])
 msg = 'Ismir Exp 1 p-value: %f' % (pvalue)
 print(msg)
 
 # Exp2 Results
 plt.figure(3)
 x3, y3, yerr3 = process_data(exp2_gtzan_data)
-y3 = y3 * 100
-yerr3 = yerr3 * 100
-plt.errorbar(x3, y3, yerr=yerr3, fmt='x')
-plt.xticks(x3, ['No FS', 'SAHS', 'BCS', 'BDFA'])
-plt.ylim(55, 84)
-plt.title('Experiment 2: GTZAN')
-plt.ylabel('Classification accuracy (%)')
-plt.grid(True, linestyle='--')
+plot_results(x3, y3, yerr3, 'Experiment 2: GTZAN', ['No FS', 'SAHS', 'BCS', 'BDFA'])
 
-stat, pvalue = scipy.stats.f_oneway(exp2_gtzan_data[0], exp2_gtzan_data[1], exp2_gtzan_data[2], exp2_gtzan_data[3])
+print('GTZAN Exp2 Normality Test')
+normality_test(exp2_gtzan_data)
+
+stat, pvalue = scipy.stats.f_oneway(exp2_gtzan_data[1], exp2_gtzan_data[2], exp2_gtzan_data[3])
 msg = 'GTZAN Exp 2 p-value: %f' % (pvalue)
 print(msg)
 
 plt.figure(4)
 x4, y4, yerr4 = process_data(exp2_ismir_data)
-plt.errorbar(x4, y4, yerr=yerr4, fmt='x')
-plt.xticks(x4, ['No FS', 'SAHS', 'BCS', 'BDFA'])
-plt.ylim(0.55, 0.84)
-plt.title('Experiment 2: ISMIR')
-plt.ylabel('F1 Score')
-plt.grid(True, linestyle='--')
+plot_results(x4, y4, yerr4, 'Experiment 2: ISMIR', ['No FS', 'SAHS', 'BCS', 'BDFA'])
 
-stat, pvalue = scipy.stats.f_oneway(exp2_ismir_data[0], exp2_ismir_data[1], exp2_ismir_data[2], exp2_ismir_data[3])
+print('ISMIR Exp2 Normality Test')
+normality_test(exp2_ismir_data)
+
+stat, pvalue = scipy.stats.f_oneway(exp2_ismir_data[1], exp2_ismir_data[2], exp2_ismir_data[3])
 msg = 'Ismir Exp 2 p-value: %f' % (pvalue)
 print(msg)
 

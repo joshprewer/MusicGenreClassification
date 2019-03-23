@@ -20,8 +20,7 @@ from sklearn.utils.metaestimators import _safe_split, if_delegate_has_method
 from sklearn.utils._joblib import Parallel
 from sklearn.utils._joblib import delayed
 from sklearn.externals.six.moves import zip as izip
-from feature_selectors import CuckooSearch, SAHS, ReliefFSFS
-import feature_selectors.binary_optimization as opt
+from feature_selection import binary_optimization, SAHS, ReliefFSFS
 
 __all__ = [
     "OneVsOneFeatureSelection",
@@ -36,12 +35,12 @@ def _fit_binary(estimator, X, y, classes=None):
     hms, hms_scores, max_score_index = hc.run()
     hs_features = np.nonzero(hms[max_score_index])[0]
     
-    obj = CuckooSearch.Evaluate(X, y, clf=estimator)
-    cs_score, g, l = opt.BCS(obj, m_i=n_iterations)
+    obj = binary_optimization.Evaluate(X, y, clf=estimator)
+    cs_score, g, l = binary_optimization.BCS(obj, m_i=n_iterations)
     cs_features = np.nonzero(g)[0]
 
-    obj = CuckooSearch.Evaluate(X, y, clf=estimator)
-    dfa_score, g, l = opt.BDFA(obj, m_i=n_iterations)
+    obj = binary_optimization.Evaluate(X, y, clf=estimator)
+    dfa_score, g, l = binary_optimization.BDFA(obj, m_i=n_iterations)
     dfa_features = np.nonzero(g)[0]
 
     return [hs_features, cs_features, dfa_features]

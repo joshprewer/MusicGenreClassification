@@ -12,15 +12,14 @@ scale = MinMaxScaler((-1, 1))
 scaled_x = scale.fit_transform(X)
 
 pca = decomposition.PCA(n_components=0.98)
-reliefF_features = np.genfromtxt('./Source/Results/Experiment1/ISMIR/ovo_reliefF.csv', delimiter=',').astype(int)
+reliefF_features = np.genfromtxt('./Results/Experiment1/ISMIR/FeatureSets/ovo_reliefF.csv', delimiter=',').astype(int)
 
-hs_features = np.genfromtxt('./Source/Results/Experiment1/ISMIR/ovo_hs.csv', delimiter=',').astype(int)
-cs_features = np.genfromtxt('./Source/Results/Experiment1/ISMIR/ovo_cs.csv', delimiter=',').astype(int)
-dfa_features = np.genfromtxt('./Source/Results/Experiment1/ISMIR/ovo_dfa.csv', delimiter=',').astype(int)
+hs_features = np.genfromtxt('./Results/Experiment1/ISMIR/FeatureSets/ovo_hs.csv', delimiter=',').astype(int)
+cs_features = np.genfromtxt('./Results/Experiment1/ISMIR/FeatureSets/ovo_cs.csv', delimiter=',').astype(int)
+dfa_features = np.genfromtxt('./Results/Experiment1/ISMIR/FeatureSets/ovo_dfa.csv', delimiter=',').astype(int)
 
 clf = svm.SVC(kernel='rbf', C=3, gamma=0.02)
 ovo_clf = multiclass.OneVsOneClassifier(clf)
-ova_clf = multiclass.OneVsRestClassifier(clf)
 number_iterations = 10
 
 cv = len(np.unique(y))
