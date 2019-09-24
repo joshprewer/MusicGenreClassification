@@ -8,6 +8,6 @@ Experiments were ran comparing:
 * Binary Cuckoo Search (BCS)
 * Binary Dragonfly Algorithm (BDFA)
 
-SAHS, BCS and BDFA were then used to build features sets for binary classifiers e.g. rock vs pop, reggage vs classical
+SAHS, BCS and BDFA were then used to build features sets for binary classifiers e.g. rock vs pop, reggage vs classical.
 
 Rhythm patterns extracted using https://github.com/tuwien-musicir/rp_extract
